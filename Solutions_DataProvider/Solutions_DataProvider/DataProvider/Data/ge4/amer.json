@@ -1,0 +1,24 @@
+﻿{
+  "ppurl": "https://test-preva-partner.dell.com/en-us/partner/auth/partner.htm",
+  "us": {
+    "info": {
+      "name": "United States of America",
+      "countrycode": "us",
+      "catelog": "g_8",
+      "buisnessid": 11
+    },
+    "urls": {
+      "oscurl": "http://www.dell.com/solutions/Configurator/US/en/g_8/AMER/osc/your-solutions",
+      "oscdsa": "https://www.dell.com/identity/global/in/ff92a5d1-b27a-415d-94ee-703f360b6fdb?redirectUrl=http://www.dell.com/solutions/Configurator/us/en/g_8/amer/Internal/DSA/osc/Your-Solutions"
+    },
+    "users": [
+      {
+        "username": "testpopartner@gmail.com",
+          "password": "password1"
+      }
+    ],
+    "products": {
+      "rackserver": "r230"
+    }
+  }
+}

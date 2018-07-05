@@ -1,0 +1,24 @@
+﻿{
+  "uk": {
+    "info": {
+      "name": "United Kindom",
+      "catelog": "g_uk",
+      "countrycode": "UK",
+      "buisnessid": 10
+    },
+    "urls": {},
+    "users": {},
+    "products": {}
+  },
+  "de": {
+    "info": {
+      "name": "Germany",
+      "countrycode": "DE",
+      "catelog": "g_de",
+      "buisnessid": 9
+    },
+    "urls": {},
+    "users": {},
+    "products": {}
+  }
+}

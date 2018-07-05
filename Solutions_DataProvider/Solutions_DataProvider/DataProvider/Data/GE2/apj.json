@@ -1,0 +1,25 @@
+﻿{
+  "in": {
+    "info": {
+      "name": "INDIA",
+      "countrycode": "IN",
+      "catelog": "g_india",
+      "buisnessid": 1
+    },
+    "urls": {},
+    "users": {},
+    "products": {}
+
+  },
+  "ch": {
+    "info": {
+      "name": "China",
+      "countrycode": "CN",
+      "catelog": "g_china",
+      "buisnessid": 0
+    },
+    "urls": {},
+    "users": {},
+    "products": {}
+  }
+}
