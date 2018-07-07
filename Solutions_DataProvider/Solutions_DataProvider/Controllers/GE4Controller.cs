@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Solutions_DataProvider.Controllers,IEnvironment
+namespace Solutions_DataProvider.Controllers
 {
     [Route("GE4")]
     public class GE4Controller : Controller, IEnvironment

@@ -12,21 +12,9 @@ namespace Solutions_DataProvider.DataProvider
     {
         string _country = string.Empty;
         JObject obj = null;
-        public DataAccess(string environment, string region, string country=null)
+        public DataAccess(string environment, string region, string country = null)
         {
-            string filename = string.Empty;
-            bool isWindows = RuntimeInformation
-                                               .IsOSPlatform(OSPlatform.Windows);
-            Console.WriteLine($"Platfomr detected is {RuntimeInformation.OSDescription}");
-            if (isWindows)
-                filename = $"{Directory.GetCurrentDirectory()}\\DataProvider\\Data\\{environment.ToLower()}\\{region.ToLower()}.json";
-            else
-                filename = $"{Directory.GetCurrentDirectory()}/DataProvider/Data/{environment.ToLower()}/{region.ToLower()}.json";
-            StreamReader stream = File.OpenText(filename);
-
-            JsonTextReader reader = new JsonTextReader(stream);
-
-            obj = (JObject)JToken.ReadFrom(reader);
+            GetFile(environment, region);
             _country = country != null ? country.ToLower() : string.Empty;
         }
 
@@ -55,6 +43,25 @@ namespace Solutions_DataProvider.DataProvider
                 }
                 return val;
             }
+        }
+
+        private void GetFile(string environment, string region)
+        {
+            JObject obj = null;
+
+            string filename = string.Empty;
+            bool isWindows = RuntimeInformation
+                                               .IsOSPlatform(OSPlatform.Windows);
+            Console.WriteLine($"Platfomr detected is {RuntimeInformation.OSDescription}");
+            if (isWindows)
+                filename = $"{Directory.GetCurrentDirectory()}\\DataProvider\\Data\\{environment.ToLower()}\\{region.ToLower()}.json";
+            else
+                filename = $"{Directory.GetCurrentDirectory()}/DataProvider/Data/{environment.ToLower()}/{region.ToLower()}.json";
+            StreamReader stream = File.OpenText(filename);
+
+            JsonTextReader reader = new JsonTextReader(stream);
+
+            obj = (JObject)JToken.ReadFrom(reader);
         }
     }
 }
