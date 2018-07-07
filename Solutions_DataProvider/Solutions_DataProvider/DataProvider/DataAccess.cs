@@ -74,6 +74,33 @@ namespace Solutions_DataProvider.DataProvider
             return "Environment updated";
         }
 
+        public string UpdateKey(string key, string value)
+        {
+            string json = File.ReadAllText(GetFilePath());
+            dynamic jsonObj = JsonConvert.DeserializeObject(json);
+
+            var t = ((JObject)jsonObj).Children();
+
+            foreach (var item in t)
+            {
+            }
+
+            if (!string.IsNullOrEmpty(_country))
+            {
+                jsonObj = jsonObj[_country];
+            }
+
+            foreach (var item in key.Split(':'))
+            {
+                jsonObj = jsonObj[item];
+            }
+
+            jsonObj = "new password";
+            string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
+            File.WriteAllText(GetFilePath(), output);
+            return "Updated the key";
+        }
+
         private string GetFilePath()
         {
             string filename = string.Empty;

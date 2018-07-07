@@ -33,5 +33,10 @@ namespace Solutions_DataProvider.Controllers
             var data = new DataProvider.DataAccess("ge3", region).Get("");
             return data;
         }
+
+        public string UpdateKey(string region, [FromQuery] string param, [FromBody] dynamic valueToUpdate)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

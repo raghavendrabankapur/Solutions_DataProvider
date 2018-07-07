@@ -37,5 +37,12 @@ namespace Solutions_DataProvider.Controllers
             var data = new DataProvider.DataAccess("ge4", region).Get("");
             return data;
         }
+
+        [HttpPut("{region}/{param}")]
+        public string UpdateKey(string region, string param, [FromBody] dynamic valueToUpdate)
+        {
+            var data = new DataProvider.DataAccess("ge4", region).UpdateKey(param, valueToUpdate.ToString());
+            return data;
+        }
     }
 }
