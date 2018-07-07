@@ -10,18 +10,24 @@ namespace Solutions_DataProvider.DataProvider
 {
     public class DataAccess
     {
-        string _country = string.Empty;
-        JObject obj = null;
+        string _country, _environment, _region;
+        private JObject obj;
         public DataAccess(string environment, string region, string country = null)
         {
-            GetFile(environment, region);
+            _environment = environment;
+            _region = region;
             _country = country != null ? country.ToLower() : string.Empty;
+            GetFile();
         }
 
-        public string GetKey(string key)
+        private JObject GetObject(string key, JObject fromObj=null)
         {
-            string val = string.Empty;
-            if (obj == null)
+            JObject root = null;
+            if(fromObj == null)
+            {
+                fromObj = obj;
+            }
+            if (fromObj == null)
             {
                 throw new Exception("No environment with the region found");
             }
@@ -29,39 +35,67 @@ namespace Solutions_DataProvider.DataProvider
             {
                 if (string.IsNullOrEmpty(_country))
                 {
-                    val = obj.ToString();
+                    return fromObj;
                 }
                 else
                 {
-                    var root = obj[_country];
+                    root = fromObj[_country] as JObject;
                     foreach (var item in key.Split(':'))
                     {
-                        root = root[item];
+                        if (root[item].GetType().Equals(typeof(JArray)))
+                        {
+                            root = (root[item])[0].ToObject<JObject>();
+                        }
+                        else
+                        {
+                            root = (root[item]).ToObject<JObject>();
+                        }
                     }
-
-                    val = root != null ? root.ToString() : throw new Exception($"Cound not find key {key}");
                 }
-                return val;
+                return root;
             }
         }
 
-        private void GetFile(string environment, string region)
+        public string Get(string key)
         {
-            JObject obj = null;
+            string val = string.Empty;
+            var root = GetObject(key);
+            val = root != null ? root.ToString() : throw new Exception($"Cound not find key {key}");
+            return val;
+        }
 
+        public string Update(string jsonToBeUpdated)
+        {
+            string path = GetFilePath();
+            lock (new object())
+            {
+                File.WriteAllText(path, jsonToBeUpdated);
+            }
+            return "Environment updated";
+        }
+
+        private string GetFilePath()
+        {
             string filename = string.Empty;
             bool isWindows = RuntimeInformation
-                                               .IsOSPlatform(OSPlatform.Windows);
+                                              .IsOSPlatform(OSPlatform.Windows);
             Console.WriteLine($"Platfomr detected is {RuntimeInformation.OSDescription}");
             if (isWindows)
-                filename = $"{Directory.GetCurrentDirectory()}\\DataProvider\\Data\\{environment.ToLower()}\\{region.ToLower()}.json";
+                filename = $"{Directory.GetCurrentDirectory()}\\DataProvider\\Data\\{_environment.ToLower()}\\{_region.ToLower()}.json";
             else
-                filename = $"{Directory.GetCurrentDirectory()}/DataProvider/Data/{environment.ToLower()}/{region.ToLower()}.json";
-            StreamReader stream = File.OpenText(filename);
+                filename = $"{Directory.GetCurrentDirectory()}/DataProvider/Data/{_environment.ToLower()}/{_region.ToLower()}.json";
+            return filename;
+        }
+
+        private void GetFile()
+        {
+            StreamReader stream = File.OpenText(GetFilePath());
 
             JsonTextReader reader = new JsonTextReader(stream);
 
-            obj = (JObject)JToken.ReadFrom(reader);
+            this.obj = (JObject)JToken.ReadFrom(reader);
+            reader.Close();
+            stream.Close();
         }
     }
 }

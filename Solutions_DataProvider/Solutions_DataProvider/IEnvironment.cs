@@ -14,5 +14,7 @@ namespace Solutions_DataProvider
         string GetDetails([FromQuery] string region, [FromQuery] string country);
         [HttpGet]
         string GetRegionDetails(string region);
+        [HttpPut]
+        string AddDetails(string region, [FromBody] dynamic jsonToUpdate);
     }
 }
