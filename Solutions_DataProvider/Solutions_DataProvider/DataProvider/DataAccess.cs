@@ -9,7 +9,7 @@ namespace Solutions_DataProvider.DataProvider
 {
     public class DataAccess
     {
-        readonly string _country;
+        string _country;
         readonly string _environment;
         readonly string _region;
         private JObject _obj;
@@ -64,17 +64,20 @@ namespace Solutions_DataProvider.DataProvider
             var json = File.ReadAllText(GetFilePath());
             dynamic jsonObj = JsonConvert.DeserializeObject(json);
 
-            if (!string.IsNullOrEmpty(_country))
+            if (string.IsNullOrEmpty(_country))
             {
-                jsonObj = jsonObj[_country];
+                var countrycodeToken = JObject.Parse(json).SelectTokens("..countrycode");
+                var values = countrycodeToken.Select(x => (x as JValue)?.Value).ToList();
+                if (values.Count >= 1)
+                {
+                    _country = values[0].ToString();
+                }
             }
 
-            foreach (var item in key.Split(':'))
-            {
-                jsonObj = jsonObj[item];
-            }
+            var token = ((JObject) jsonObj).SelectToken($"{_country}.{key.Replace(":", ".")}");
 
-            jsonObj = "new password";
+            if (token.Parent is JProperty prop) prop.Value = value;
+
             string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
             File.WriteAllText(GetFilePath(), output);
             return "Updated the key";
