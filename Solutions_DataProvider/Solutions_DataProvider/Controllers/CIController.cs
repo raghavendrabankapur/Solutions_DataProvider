@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Solutions_DataProvider.Controllers
 {
     [Route("CI")]
-    public class CIController : Controller, IEnvironment
+    public class CiController : Controller, IEnvironment
     {
         [HttpPut("{region}")]
         public string AddDetails(string region, [FromBody] dynamic jsonToBeAdded)

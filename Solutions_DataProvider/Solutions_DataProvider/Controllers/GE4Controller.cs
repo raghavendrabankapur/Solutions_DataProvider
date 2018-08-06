@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Solutions_DataProvider.Controllers
 {
     [Route("GE4")]
-    public class GE4Controller : Controller, IEnvironment
+    public class Ge4Controller : Controller, IEnvironment
     {
         [HttpPut("{region}")]
         public string AddDetails(string region,[FromBody] dynamic jsonToBeAdded)

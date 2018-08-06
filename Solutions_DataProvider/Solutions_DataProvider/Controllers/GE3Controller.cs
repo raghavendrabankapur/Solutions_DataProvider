@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Solutions_DataProvider.Controllers
 {
     [Route("GE3")]
-    public class GE3Controller : Controller, IEnvironment
+    public class Ge3Controller : Controller, IEnvironment
     {
         [HttpPut("{region}")]
         public string AddDetails(string region, [FromBody] dynamic jsonToBeAdded)
