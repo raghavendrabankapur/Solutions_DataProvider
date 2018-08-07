@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -81,6 +82,33 @@ namespace Solutions_DataProvider.DataProvider
             string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
             File.WriteAllText(GetFilePath(), output);
             return "Updated the key";
+        }
+
+        public string AddKey(string path, string key, string value)
+        {
+            var json = File.ReadAllText(GetFilePath());
+            dynamic jsonObj = JsonConvert.DeserializeObject(json);
+
+            if (string.IsNullOrEmpty(_country))
+            {
+                var countrycodeToken = JObject.Parse(json).SelectTokens("..countrycode");
+                var values = countrycodeToken.Select(x => (x as JValue)?.Value).ToList();
+                if (values.Count >= 1)
+                {
+                    _country = values[0].ToString();
+                }
+            }
+
+            var token = ((JObject)jsonObj).SelectToken($"{_country}.{key.Replace(":", ".")}");
+            if (token != null)
+                return $"Key {key} already exists";
+
+            var newProperty = new JProperty(key, value);
+            ((JObject) jsonObj).TryAdd(key, newProperty);
+            string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
+            File.WriteAllText(GetFilePath(), output);
+
+            return "Key added";
         }
 
         private string GetFilePath()

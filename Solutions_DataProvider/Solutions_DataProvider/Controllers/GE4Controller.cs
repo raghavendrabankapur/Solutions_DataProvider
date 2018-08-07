@@ -3,7 +3,7 @@
 namespace Solutions_DataProvider.Controllers
 {
     [Route("GE4")]
-    public class Ge4Controller : Controller, IEnvironment
+    public class Ge4Controller : Controller
     {
         [HttpPut("{region}")]
         public string AddDetails(string region,[FromBody] dynamic jsonToBeAdded)
@@ -20,7 +20,7 @@ namespace Solutions_DataProvider.Controllers
         }
 
         [HttpGet("{region}/{country}/{param}")]
-        public string GetEnvironmentDetails(string region, string country, string param)
+        public string GetEnvironmentDetails(string region, string country, string param, [FromBody] dynamic valueToUpdate)
         {
             var data = new DataProvider.DataAccess("ge4", region, country).Get(param);
             return data;
@@ -37,6 +37,13 @@ namespace Solutions_DataProvider.Controllers
         public string UpdateKey(string region, string param, [FromBody] dynamic valueToUpdate)
         {
             var data = new DataProvider.DataAccess("ge4", region).UpdateKey(param, valueToUpdate.ToString());
+            return data;
+        }
+
+        [HttpPost("{region}/{path}/{key}")]
+        public string AddKey(string region, string path, string key, [FromBody] dynamic valueToUpdate)
+        {
+            var data = new DataProvider.DataAccess("ge4", region).AddKey(path,key, valueToUpdate.ToString());
             return data;
         }
     }
