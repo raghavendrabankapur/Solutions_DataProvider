@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Solutions_DataProvider.DataProvider;
 
 namespace Solutions_DataProvider.Controllers
 {
     [Route("GE4")]
-    public class Ge4Controller : Controller, IEnvironment
+    public class Ge4Controller : Controller
     {
-        [HttpPut("{region}")]
+        [HttpPost("{region}")]
         public string AddDetails(string region,[FromBody] dynamic jsonToBeAdded)
         {
-            var resp = new DataProvider.DataAccess("ge4", region).Update(jsonToBeAdded.ToString());
-            return resp;
+            var data = new DataProvider.DataAccess("ge4", region).AddKey(jsonToBeAdded.ToString());
+            return data;
         }
 
         [HttpGet("{region}/{country}")]
@@ -33,12 +34,12 @@ namespace Solutions_DataProvider.Controllers
             return data;
         }
 
-        [HttpPost("{region}/{path}/{key}")]
-        public string AddKey(string region, string path, string key, [FromBody] dynamic valueToUpdate)
-        {
-            var data = new DataProvider.DataAccess("ge4", region).AddKey(path,key, valueToUpdate.ToString());
-            return data;
-        }
+        //[HttpPost("add/{region}/{path}")]
+        //public string AddKey(string region, string path, [FromBody] DataAccess.PostData valueToUpdate)
+        //{
+        //    var data = new DataProvider.DataAccess("ge4", region).AddKey(path,valueToUpdate);
+        //    return data;
+        //}
 
         [HttpGet("{region}/{country}/{param}")]
         public string GetEnvironmentDetails(string region, string country, string param)

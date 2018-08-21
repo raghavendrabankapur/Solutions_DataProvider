@@ -38,8 +38,8 @@ namespace Solutions_DataProvider.DataProvider
                 return fromObj;
             }
 
-            var root = fromObj[_country] as JObject;
-            root = key.Split(':').Aggregate(root, (current, item) => (current[item].GetType() == typeof(JArray) ? (current[item])[0].ToObject<JObject>() : (current[item]).ToObject<JObject>()));
+            var root = fromObj.SelectToken(_country.Replace(":", ".")) as JObject;
+            //root = key.Split(':').Aggregate(root, (current, item) => (current[item].GetType() == typeof(JArray) ? (current[item])[0].ToObject<JObject>() : (current[item]).ToObject<JObject>()));
             return root;
         }
 
@@ -84,27 +84,42 @@ namespace Solutions_DataProvider.DataProvider
             return "Updated the key";
         }
 
-        public string AddKey(string path, string key, string value)
+        public string AddKey(string data)
         {
             var json = File.ReadAllText(GetFilePath());
             dynamic jsonObj = JsonConvert.DeserializeObject(json);
 
-            if (string.IsNullOrEmpty(_country))
+            dynamic toupdate = JsonConvert.DeserializeObject(data);
+
+            var allkeys = toupdate.key.ToString().Split(":");
+
+            JToken ptkn = null;
+            var path=string.Empty;
+
+            foreach (var k in allkeys)
             {
-                var countrycodeToken = JObject.Parse(json).SelectTokens("..countrycode");
-                var values = countrycodeToken.Select(x => (x as JValue)?.Value).ToList();
-                if (values.Count >= 1)
+                path = $"{path}.{k}";
+                var ctkn = ((JObject) jsonObj).SelectToken(path);
+                if (ctkn == null)
                 {
-                    _country = values[0].ToString();
+                    if (ptkn.GetType() == typeof(JObject))
+                    {
+                        ((JObject) ptkn).Add(new JProperty(k, toupdate.value));
+                    }
+
+                    break;
                 }
+                else if (ctkn.GetType() == typeof(JArray) && ((Newtonsoft.Json.Linq.JProperty)ctkn.Parent).Name.ToLower().Contains("users"))
+                {
+                    if (((JArray) ctkn).Count >= 0)
+                    {
+                        ((JArray)ctkn).Insert(((JArray)ctkn).Count-1, new JObject(toupdate.value.ToString()));
+                    }
+                }
+
+                ptkn = ctkn;
             }
 
-            var token = ((JObject)jsonObj).SelectToken($"{_country}.{key.Replace(":", ".")}");
-            if (token != null)
-                return $"Key {key} already exists";
-
-            var newProperty = new JProperty(key, value);
-            ((JObject) jsonObj).TryAdd(key, newProperty);
             string output = JsonConvert.SerializeObject(jsonObj, Formatting.Indented);
             File.WriteAllText(GetFilePath(), output);
 
@@ -129,6 +144,12 @@ namespace Solutions_DataProvider.DataProvider
             _obj = (JObject)JToken.ReadFrom(reader);
             reader.Close();
             stream.Close();
+        }
+
+        public class PostData
+        {
+            public string key { get; set; }
+            public string value { get; set; }
         }
     }
 }

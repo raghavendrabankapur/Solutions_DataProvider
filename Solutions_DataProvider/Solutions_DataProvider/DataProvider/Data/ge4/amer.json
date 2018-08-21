@@ -1,4 +1,4 @@
-﻿{
+{
   "ppurl": "https://test-preva-partner.dell.com/en-us/partner/auth/partner.htm",
   "us": {
     "info": {
@@ -14,11 +14,12 @@
     "users": [
       {
         "username": "testpopartner@gmail.com",
-          "password": "password1"
+        "password": "password1"
       }
     ],
     "products": {
-      "rackserver": "r230"
+      "rackserver": "r230",
+      "test": "r230"
     }
   }
 }
